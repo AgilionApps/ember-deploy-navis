@@ -6,22 +6,25 @@
 
 From the root of your ember application's repository:
 
-`ember install ember-cli-deploy`
-`ember g deploy-config`
-`ember install git@github.com:AgilionApps/ember-deploy-navis.git`
+```shell
+ember install ember-cli-deploy
+ember g deploy-config
+ember install git@github.com:AgilionApps/ember-deploy-navis.git
+```
 
 Set the bucket URL for your assets in `Brocfile.js`. This makes your application's asset URLs absolute -- and pointing to S3 -- instead of relative and pointing to your application's domain.
 
-```
-fingerprint: {
-  prepend: '<your-s3-bucket-url>'
-}
+```javascript
+var app = new EmberApp({
+  fingerprint: {
+    prepend: '<your-s3-bucket-url>'
+  }
+});
 ```
 
 Edit `config/deploy.js`:
 
-```js
-
+```javascript
 module.exports = {
   "development": {
     "store": {
@@ -44,7 +47,7 @@ module.exports = {
 
 Set the necessary environment variables in your shell config e.g., `~/.zshrc` or `~/.bashrc`:
 
-```
+```shell
 ### Navis creds
 export NAVIS_USER_KEY="<your-navis-deploy-key>"
 export NAVIS_USER_SECRET="<your-navis-deploy-secret>"
@@ -67,18 +70,24 @@ Available commands:
 
 In a new directory (not an ember application's directory);
 
-`git clone git@github.com:AgilionApps/ember-deploy-navis.git`
-`npm install && bower install`
+```shell
+git clone git@github.com:AgilionApps/ember-deploy-navis.git
+npm install && bower install
+```
 
 ### Link to an ember application for ease of development
 
 In this addon's directory:
 
-`npm link`
+```shell
+npm link
+```
 
 In an ember application's directory:
 
-`npm link ember-deploy-navis`
+```shell
+npm link ember-deploy-navis
+```
 
 If you find it simpler, you can now work on this addon from
 within the ember application at
