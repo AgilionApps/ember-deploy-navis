@@ -8,11 +8,11 @@ From the root of your ember application's repository:
 
 ```shell
 ember install ember-cli-deploy
-ember g deploy-config
-ember install git@github.com:AgilionApps/ember-deploy-navis.git
+ember install ember-deploy-s3
+ember install git+ssh://github.com/AgilionApps/ember-deploy-navis.git
 ```
 
-Set the bucket URL for your assets in `Brocfile.js`. This makes your application's asset URLs absolute -- and pointing to S3 -- instead of relative and pointing to your application's domain.
+Set the bucket URL for your assets in `Brocfile.js`. This makes your application's asset URLs absolute -- and pointing to S3 -- instead of relative and pointing to your application's domain. The S3 URL depends on your region but is typically a concatenation of `//` + bucket name + `.s3.amazonaws.com/` e.g., `//my-marketing-site-bucket.s3.amazonaws.com`.
 
 ```javascript
 var app = new EmberApp({
@@ -37,7 +37,7 @@ module.exports = {
     "assets": {
       "type": "s3",
       "accessKeyId": "<your-s3-access-id>",
-      "secretAccessKey": process.env.S3_ACCESS_SECRET,
+      "secretAccessKey": process.env.YOUR_APP_S3_ACCESS_SECRET,
       "bucket": "<your-s3-bucket-name>"
     }
   }
@@ -51,9 +51,7 @@ Set the necessary environment variables in your shell config e.g., `~/.zshrc` or
 ### Navis creds
 export NAVIS_USER_KEY="<your-navis-deploy-key>"
 export NAVIS_USER_SECRET="<your-navis-deploy-secret>"
-
-### S3 creds
-export S3_ACCESS_SECRET="<your-s3-access-secret>"
+export YOUR_APP_S3_ACCESS_SECRET="<your-s3-access-secret>"
 ```
 
 ### Usage
@@ -61,7 +59,8 @@ export S3_ACCESS_SECRET="<your-s3-access-secret>"
 Available commands:
 
 * `ember deploy:list` to see the list of existing builds
-* `ember deploy` to deploy your application
+* `ember deploy` to deploy your application for development
+* `ember deploy --environment production` to deploy your application for production
 * `ember deploy:activate --revision <VERSION>` to activate a specific revision
 
 ## Contribute to this addon
