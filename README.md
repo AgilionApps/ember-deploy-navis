@@ -1,14 +1,15 @@
 # ember-deploy-navis
 
-## Use this addon in an ember application
+## Deploy Ember applications to Navis.io
 
 ### Setup
 
 From the root of your ember application's repository:
 
 ```shell
-ember install ember-cli-deploy
-ember install ember-deploy-s3
+npm install --save-dev ember-cli-deploy@beta
+npm install --save-dev ember-cli-deploy-revision-data
+npm install --save-dev ember-cli-deploy-display-revisions
 ember install git+ssh://github.com/AgilionApps/ember-deploy-navis.git
 ```
 
@@ -25,24 +26,25 @@ var app = new EmberApp({
 Edit `config/deploy.js`:
 
 ```javascript
-module.exports = {
-  "development": {
-    "store": {
-      "type": "Navis",
-      "appKey": "<your-navis-app-id>",
-      "userSecret": process.env.NAVIS_USER_SECRET,
-      "userKey": process.env.NAVIS_USER_KEY
+module.exports = function(environment) {
+  var DEPLOY = {
+    'revision-data': {
+      type: 'version-commit'
     },
 
-    "assets": {
-      "type": "s3",
-      "accessKeyId": "<your-s3-access-id>",
-      "secretAccessKey": process.env.YOUR_APP_S3_ACCESS_SECRET,
-      "bucket": "<your-s3-bucket-name>"
+    'navis': {
+      appKey: '[find-me-on-navis.io]', // Staging app key
+      userKey: process.env.NAVIS_USER_KEY,
+      userSecret: process.env.NAVIS_USER_SECRET
     }
+  };
+
+  if (environment === 'production') {
+    DEPLOY['navis']['appKey'] = '[find-me-on-navis.io]';
   }
-  // Make an entry for each environment
-}
+
+  return DEPLOY;
+};
 ```
 
 Set the necessary environment variables in your shell config e.g., `~/.zshrc` or `~/.bashrc`:
@@ -51,7 +53,6 @@ Set the necessary environment variables in your shell config e.g., `~/.zshrc` or
 ### Navis creds
 export NAVIS_USER_KEY="<your-navis-deploy-key>"
 export NAVIS_USER_SECRET="<your-navis-deploy-secret>"
-export YOUR_APP_S3_ACCESS_SECRET="<your-s3-access-secret>"
 ```
 
 ### Usage
