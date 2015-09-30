@@ -1,58 +1,84 @@
 # ember-deploy-navis
 
-## Use this addon in an ember application
+## Deploy Ember applications to Navis.io using ember-cli-deploy
+
+This plugin handles interactions with Navis and is intended for use as part of
+the [ember-cli-deploy-navis-pack](https://github.com/AgilionApps/ember-cli-deploy-navis-pack).
+
 
 ### Setup
 
 From the root of your ember application's repository:
 
 ```shell
-ember install ember-cli-deploy
-ember install ember-deploy-s3
 ember install git+ssh://github.com/AgilionApps/ember-deploy-navis.git
 ```
 
-Set the bucket URL for your assets in `Brocfile.js`. This makes your application's asset URLs absolute -- and pointing to S3 -- instead of relative and pointing to your application's domain. The S3 URL depends on your region but is typically a concatenation of `//` + bucket name + `.s3.amazonaws.com/` e.g., `//my-marketing-site-bucket.s3.amazonaws.com`.
+### Deploy Config
 
-```javascript
-var app = new EmberApp({
-  fingerprint: {
-    prepend: '<your-s3-bucket-url>'
-  }
-});
-```
+To deploy to Navis you will need two pieces of information from Navis:
 
-Edit `config/deploy.js`:
+1. Your Navis.io `appKey`. This is available on the view application screen.
+   The `appKey` is unique per application, per environment.
+2. Your Navis.io deploy credentials, the `userKey` and `userSecret`. These
+   are available on your profile page. Your user credentials are used for all 
+   Navis apps.
 
-```javascript
-module.exports = {
-  "development": {
-    "store": {
-      "type": "Navis",
-      "appKey": "<your-navis-app-id>",
-      "userSecret": process.env.NAVIS_USER_SECRET,
-      "userKey": process.env.NAVIS_USER_KEY
-    },
+You will typically want to export your user credentials as environmental vars.
 
-    "assets": {
-      "type": "s3",
-      "accessKeyId": "<your-s3-access-id>",
-      "secretAccessKey": process.env.YOUR_APP_S3_ACCESS_SECRET,
-      "bucket": "<your-s3-bucket-name>"
-    }
-  }
-  // Make an entry for each environment
-}
-```
-
-Set the necessary environment variables in your shell config e.g., `~/.zshrc` or `~/.bashrc`:
+In `~/.zshrc` or `~/.bashrc` (or similar):
 
 ```shell
 ### Navis creds
 export NAVIS_USER_KEY="<your-navis-deploy-key>"
 export NAVIS_USER_SECRET="<your-navis-deploy-secret>"
-export YOUR_APP_S3_ACCESS_SECRET="<your-s3-access-secret>"
 ```
+
+You can now configure ember-cli-deploy.
+
+Edit `config/deploy.js`:
+
+```javascript
+module.exports = function(environment) {
+  var DEPLOY = {
+    'revision-data': {
+      type: 'version-commit'
+    },
+
+    'navis': {
+      appKey: '[find-me-on-navis.io]', // Staging app key
+      userKey: process.env.NAVIS_USER_KEY,
+      userSecret: process.env.NAVIS_USER_SECRET,
+      uploadAssets: true //default
+    }
+  };
+
+  if (environment === 'production') {
+    DEPLOY['navis']['appKey'] = '[find-me-on-navis.io]';
+  }
+
+  return DEPLOY;
+};
+```
+
+#### Navis Asset Hosting
+
+By default ember-deploy-navis will upload your assets to the navis asset host.
+You can disable this behaviour by setting `uploadAssets` to `false`.
+
+To take advantage of the assets you must prepend your navis asset host 
+path onto asset URLs. Add the following to `ember-cli-build.js` or 
+`Brocfile.js`: 
+
+```javascript
+var app = new EmberApp({
+  fingerprint: {
+    prepend: '//cdn.navis.io/<your app_key>/'
+  }
+});
+```
+
+You are now ready to deploy!
 
 ### Usage
 
