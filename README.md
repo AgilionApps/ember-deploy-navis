@@ -2,14 +2,15 @@
 
 ## Deploy Ember applications to Navis.io using ember-cli-deploy
 
+This plugin handles interactions with Navis and is intended for use as part of
+the [ember-cli-deploy-navis-pack](https://github.com/AgilionApps/ember-cli-deploy-navis-pack).
+
+
 ### Setup
 
 From the root of your ember application's repository:
 
 ```shell
-npm install --save-dev ember-cli-deploy@beta
-npm install --save-dev ember-cli-deploy-revision-data
-npm install --save-dev ember-cli-deploy-display-revisions
 ember install git+ssh://github.com/AgilionApps/ember-deploy-navis.git
 ```
 
