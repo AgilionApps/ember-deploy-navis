@@ -20,10 +20,8 @@ module.exports = {
         assetPattern: '**/*.{js,css,png,gif,jpg,map,xml,txt,svg,eot,ttf,woff,woff2}',
         navisDeploy: function() { return new NavisDeploy(this.pluginConfig); },
 
-        //TODO: Our own revision adapter?
         revisionKey: function(context) {
-          return context.commandOptions.revision || 
-            (context.revisionData && context.revisionData.revisionKey).split('+')[1];
+          return context.commandOptions.revision || context['git-info']['commit'];
         }
       },
 
@@ -43,7 +41,7 @@ module.exports = {
         var filePath    = path.join(context.distDir, filePattern);
 
         this.log('Uploading `' + filePath + '`' + ' as `' + revision + '`');
-        return navis.uploadBuild(filePath, revision);
+        return navis.uploadBuild(filePath, revision, context['git-info']);
       },
 
       _uploadAssets: function(context) {
@@ -64,7 +62,6 @@ module.exports = {
         return new RSVP.all(promises);
       },
 
-
       activate: function() {
         var navis    = this.readConfig('navisDeploy');
         var revision = this.readConfig('revisionKey');
@@ -74,7 +71,7 @@ module.exports = {
 
       fetchRevisions: function() {
         var navis = this.readConfig('navisDeploy');
-        this.log('Fetching revisions');
+        this.log('Fetching revisions from Navis');
         return navis.list().then(function(data) {
           // Format results for ember-cli-deploy
           return {revisions: data.map(function(rev) {
