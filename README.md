@@ -14,6 +14,8 @@ From the root of your ember application's repository:
 ember install git+ssh://github.com/AgilionApps/ember-deploy-navis.git
 ```
 
+Assumes ember-cli-deploy-git-info is installed as well.
+
 ### Deploy Config
 
 To deploy to Navis you will need two pieces of information from Navis:
@@ -41,10 +43,6 @@ Edit `config/deploy.js`:
 ```javascript
 module.exports = function(environment) {
   var DEPLOY = {
-    'revision-data': {
-      type: 'version-commit'
-    },
-
     'navis': {
       appKey: '[find-me-on-navis.io]', // Staging app key
       userKey: process.env.NAVIS_USER_KEY,
