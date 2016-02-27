@@ -6,6 +6,7 @@ var NavisDeploy      = require('./lib/navis-deploy');
 var path             = require('path');
 var RSVP             = require('rsvp');
 var minimatch        = require('minimatch');
+var sleep            = require('sleep');
 
 module.exports = {
   name: 'ember-cli-deploy-navis',
@@ -56,6 +57,7 @@ module.exports = {
           filter(minimatch.filter(assetPattern, {matchBase: true})).
           map(function(file) {
             this.log('Uploading asset: ' + file);
+            sleep.usleep(500000);
             return navis.uploadAsset(path.join(context.distDir, file), file);
           }.bind(this));
 
