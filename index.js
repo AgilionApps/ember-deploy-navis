@@ -56,13 +56,12 @@ module.exports = {
           filter(minimatch.filter(assetPattern, {matchBase: true})).
           map(function(file) {
             return {
-              log: function() { this.log('Uploading asset: ' + file) },
               path: path.join(context.distDir, file), 
               file: file
             }
           }.bind(this));
 
-        return navis.uploadAssets(files);
+        return navis.uploadAssets(files, this);
       },
 
       activate: function() {
