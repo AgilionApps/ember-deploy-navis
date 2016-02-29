@@ -53,15 +53,17 @@ module.exports = {
         var revision     = this.readConfig('revisionKey');
 
         this.log('Uploading assets');
-        var promises = context.distFiles.
+        var files = context.distFiles.
           filter(minimatch.filter(assetPattern, {matchBase: true})).
           map(function(file) {
-            this.log('Uploading asset: ' + file);
-            sleep.usleep(500000);
-            return navis.uploadAsset(path.join(context.distDir, file), file);
+            return {
+              log: function() { this.log('Uploading asset: ' + file) },
+              path: path.join(context.distDir, file), 
+              file: file
+            }
           }.bind(this));
 
-        return new RSVP.all(promises);
+        return navis.uploadAssets(files);
       },
 
       activate: function() {
