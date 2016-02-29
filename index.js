@@ -6,7 +6,6 @@ var NavisDeploy      = require('./lib/navis-deploy');
 var path             = require('path');
 var RSVP             = require('rsvp');
 var minimatch        = require('minimatch');
-var sleep            = require('sleep');
 
 module.exports = {
   name: 'ember-cli-deploy-navis',
