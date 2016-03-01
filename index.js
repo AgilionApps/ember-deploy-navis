@@ -52,14 +52,16 @@ module.exports = {
         var revision     = this.readConfig('revisionKey');
 
         this.log('Uploading assets');
-        var promises = context.distFiles.
+        var files = context.distFiles.
           filter(minimatch.filter(assetPattern, {matchBase: true})).
           map(function(file) {
-            this.log('Uploading asset: ' + file);
-            return navis.uploadAsset(path.join(context.distDir, file), file);
+            return {
+              path: path.join(context.distDir, file), 
+              file: file
+            }
           }.bind(this));
 
-        return new RSVP.all(promises);
+        return navis.uploadAssets(files, this);
       },
 
       activate: function() {
